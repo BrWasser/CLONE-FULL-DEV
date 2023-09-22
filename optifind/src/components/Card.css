@@ -1,0 +1,83 @@
+/* NftCard.css */
+
+/* Estilos para o contêiner do card */
+.single__nft__card {
+  width: 80%; /* Defina a largura desejada */
+  margin: 0 auto; /* Centralize horizontalmente */
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* Espaçamento entre os cards */
+}
+
+.nft__content {
+  height: 25%;
+}
+
+/* Estilos para a imagem dentro do card */
+.nft__img {
+  text-align: center; /* Centralize horizontalmente */
+  display: flex; /* Use flex para centralizar verticalmente */
+  justify-content: center; /* Centralize verticalmente */
+  height: 75%;
+}
+
+/* Estilos para a imagem dentro do card */
+.nft__img img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+/* Estilos para o título do card */
+.nft__title p {
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+}
+
+.add-nft__content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 25%;
+}
+
+.add-nft__title {
+  font-size: 30px;
+}
+
+/* Estilos para a seção de informações do criador */
+.creator__info-wrapper {
+  margin-top: 10px;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+/* Estilos para a imagem do criador */
+.creator__img img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 50%;
+  width: 50px; /* Tamanho desejado para a imagem do criador */
+}
+
+/* Estilos para o texto de informações do criador */
+.creator__info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.creator__info p {
+  margin: 0;
+}
+
+/* Estilos para o texto "Created By" */
+.creator__info h6 {
+  margin: 0;
+  font-size: 14px;
+  color: #888;
+}
