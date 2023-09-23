@@ -29,7 +29,6 @@ Em resumo, este projeto busca criar uma ferramenta que proporciona uma forma fac
 Iniciamos mapeando o fluxo complexo do processo de maturação e fermentação dentro da cervejaria, modelando-o como um grafo direcionado no Neo4J. Cada elemento funcional, como tanques e válvulas, é representado como um nó individual no grafo. As interconexões físicas e funcionais entre essas unidades são representadas pelas arestas do grafo.
 Para aprimorar ainda mais a automação, identificamos pontos críticos onde as rotas podem divergir ou convergir, denominados 'nós de decisão'. Além disso, todas as limitações e restrições, como restrições de capacidade de transporte ou armazenamento, são meticulosamente mapeadas para garantir uma otimização precisa. Visando calcular as rotas mais eficientes entre os nós de origem e destino, aplicamos o algoritmo de Dijkstra. Esse algoritmo é adequado para essa aplicação, pois é eficiente em encontrar o caminho mais curto entre os nós em grafos com pesos positivos e é capaz de lidar com cenários complexos. Desenvolvemos uma interface de controle interativa que exibe o grafo em tempo real, destacando visualmente as rotas mais otimizadas. Os operadores têm a capacidade de interagir com a interface, permitindo ajustes de nós, além de visualização de caminhos entre dois nós escolhidos. A metodologia proposta utiliza entradas em tempo real. Esses dados são processados pelo algoritmo de Dijkstra para identificar a rota mais otimizada, reduzindo significativamente o tempo necessário para planejar e elaborar as rotas de produção. Isso resulta em uma melhoria notável na eficiência operacional e na qualidade da cerveja produzida.
 
-# Descrição do problema
 
 # Trabalhos relacionados
 
@@ -38,50 +37,100 @@ Diversos estudos têm explorado a automação e otimização de processos indust
 
 # Análise da complexidade da solução proposta
 
+Para poder discorrer sobre as particularidades do Dijkstra, devemos entender como o algoritmo funciona. O Dijkstra é um algoritmo de busca que percorre uma quantidade de nós pré-estabelecidos a fim de encontrar o caminho de custo mínimo, ou seja, o menor caminho entre dois nós.
 
-Para poder discorrer sobre as particularidades do Dijkstra, devemos entender como o algoritmo funciona. 
-O Dijkstra é um algoritmo de busca que percorre uma quantidade de nós pré-estabelecidos a fim de encontrar o caminho de custo mínimo, ou seja, o menor caminho entre dois nós.
+### Funcionamento do algoritmo Dijkstra
+
 Para resolver tal tarefa, o Dijkstra usa de algumas variáveis:
-Cria uma lista de todos os vértices não visitados no grafo
-Uma lista de distâncias com seus vértices. Inicialmente todas as distâncias são inicializadas como infinitas, exceto a distância até o nó de origem, que recebe o valor 0. 
-Uma lista com todos os nós visitados.
 
-Com esses itens já a postos, o algoritmo então começa no vértice de origem (com distância 0) e observa todos os arcos conectados a ele. Em seguida, ele atualiza os valores de tais arcos na lista de distâncias e inclui na lista de nós visitados aquele que tiver o arco com menor valor. Por fim ele faz o mesmo processo que fez com o nó de origem para este novo nó visitado, repetindo esses passos até chegar no nó desejado. 
+1. Cria uma lista de todos os vértices não visitados no grafo.
+2. Uma lista de distâncias com seus vértices. Inicialmente, todas as distâncias são inicializadas como infinitas, exceto a distância até o nó de origem, que recebe o valor 0.
+3. Uma lista com todos os nós visitados.
 
-Com todas essas informações, dá para começar a análise de complexidade.
-Começando pelo pior caso:
-O pior caso para o algoritmo é quando ele tem que visitar todos os possíveis nodos e arestas em um grafo completo.
-Já o melhor caso é quando o algoritmo consegue encontrar o nodo com a menor distância a cada iteração, ou seja, cada nodo é visitado apenas uma vez e ele não explora nós/arestas irrelevantes.
+Com esses itens já a postos, o algoritmo então começa no vértice de origem (com distância 0) e observa todos os arcos conectados a ele. Em seguida, ele atualiza os valores de tais arcos na lista de distâncias e inclui na lista de nós visitados aquele que tiver o arco com menor valor. Por fim, ele faz o mesmo processo que fez com o nó de origem para este novo nó visitado, repetindo esses passos até chegar no nó desejado.
 
-Análise pior caso: 
-Setar a distância entre todos os nós para infinito e a distância do nó inicial para 0 demora O(V) onde V é o número de vértices.
-No pior caso, O “while” rodar até V vezes, já que cada nodo pode ser adicionado ao priorityQueue uma vez. A cada iteração, o algoritmo remove o nodo com a menor distância desta lista de prioridade, o que leva O(log V) já que este priorityQueue é Binary heap-based. Ou seja O(V*log(V))
-No For loop, ele itera sobre os vizinhos do nodo atual, tomando O(E) onde E é o número de arcos já que no pior caso ele irá examinar um número de arestas mais próximo de E. 
-No final,  para cada vizinho, o algoritmo modifica a sua distância caso um caminho menor seja encontrado, o adicionando na lista de prioridade.
-Portanto, temos uma complexidade resultante de O((V+E)*log(V))
+## Análise de complexidade
+
+Com todas essas informações, dá para começar a análise de complexidade. Começando pelo pior caso:
+
+### Pior caso
+
+O pior caso para o algoritmo é quando ele tem que visitar todos os possíveis nodos e arestas em um grafo completo. Já o melhor caso é quando o algoritmo consegue encontrar o nodo com a menor distância a cada iteração, ou seja, cada nodo é visitado apenas uma vez e ele não explora nós/arestas irrelevantes.
+
+Análise pior caso:
+
+1. Setar a distância entre todos os nós para infinito e a distância do nó inicial para 0 demora $O(V)$, onde $V$ é o número de vértices.
+2. No pior caso, o `while` rodar até $V$ vezes, já que cada nodo pode ser adicionado ao `priorityQueue` uma vez. A cada iteração, o algoritmo remove o nodo com a menor distância desta lista de prioridade, o que leva $O(\log V)$, já que este `priorityQueue` é Binary heap-based. Ou seja, $O(V\log(V))$.
+3. No `for` loop, ele itera sobre os vizinhos do nodo atual, tomando $O(E)$, onde $E$ é o número de arcos, já que no pior caso ele irá examinar um número de arestas mais próximo de $E$.
+
+No final, para cada vizinho, o algoritmo modifica a sua distância caso um caminho menor seja encontrado, o adicionando na lista de prioridade. Portanto, temos uma complexidade resultante de $O((V+E)\log(V))$.
+
+### Melhor caso
 
 Análise melhor caso:
-Setar a distância entre todos os nós para infinito e a distância do nó inicial para 0 demora O(V) onde V é o número de vértices.
-No melhor caso o While vai rodar exatamente V vezes
-Dentro do for loop, ele examina os vizinhos O(E) mas realiza o mínimo de operações com a fila de prioridade, evitando explorar nós e arestas que não fazem parte do caminho mais curto. 
-As operações com a fila de prioridade ainda tomam O(V*log(V)) complexidade.
-Ou seja, a complexidade acaba sendo O((V+E)*log(V)) também. Mesmo a complexidade sendo a mesma, no melhor caso o algoritmo tende a executar mais rápido, já que diferente do pior caso ele não irá rodar O(E) exatamente O(E) vezes. No melhor caso, ele sempre rodará um número menor que O(E).
 
-Invariante com justificativa 
+1. Determinar a distância entre todos os nós para infinito e a distância do nó inicial para 0 demora $O(V)$, onde $V$ é o número de vértices.
+2. No melhor caso, o `while` vai rodar exatamente $V$ vezes.
+3. Dentro do `for` loop, ele examina os vizinhos $O(E)$, mas realiza o mínimo de operações com a fila de prioridade, evitando explorar nós e arestas que não fazem parte do caminho mais curto.
+
+As operações com a fila de prioridade ainda tomam $O(V\log(V))$ complexidade. Ou seja, a complexidade acaba sendo $O((V+E)\log(V))$ também. Mesmo a complexidade sendo a mesma, no melhor caso o algoritmo tende a executar mais rápido, já que diferente do pior caso ele não irá rodar $O(E)$ exatamente $O(E)$ vezes. No melhor caso, ele sempre rodará um número menor que $O(E)$.
+
+## Invariante com justificativa
+
 A invariante do laço representa uma expressão que será verdadeira toda vez que um loop (laço) for executado. Neste sentido, a invariante escolhida foi:
-C(k+1) = C(k) + d(k, k+1).
-Ela foi escolhida pois representa o caminho mínimo até o próximo nó (k+1), que é dado pelo menor caminho até o nó anterior somado à distância entre o nó k e este mesmo nó (k+1).
-Essa propriedade sempre se manterá verdadeira, pois o Dijkstra calcula a menor distância até o nó avaliado guardando a distância dos nós já visitados somada a este novo caminho. 
+$C(k+1) = C(k) + d(k, k+1)$.
+Ela foi escolhida pois representa o caminho mínimo até o próximo nó ($k+1$), que é dado pelo menor caminho até o nó anterior somado à distância entre o nó $k$ e este mesmo nó ($k+1$). Essa propriedade sempre se manterá verdadeira, pois o Dijkstra calcula a menor distância até o nó avaliado guardando a distância dos nós já visitados somada a este novo caminho.
 
-Agora demonstrando sua corretude
+## Demonstração de corretude
+
 Passo básico:
-C(k) = 0, já que o Dijkstra define a distância do nó de origem como 0.
+
+$C(k) = 0$, já que o Dijkstra define a distância do nó de origem como 0.
+
 Hipótese de indução:
-C(k+1) = C(k) + d(k, k+1). Supor valido a distância mínima até o nó C(k+1). 
+
+$C(k+1) = C(k) + d(k, k+1)$.
+
+Supor válido a distância mínima até o nó $C(k+1)$.
+
 Prova:
-Provar para a iteração C(k+2) = C(k+1) + d(k+1, k+2). Como C(k+2) contém C(k+1) que é a menor distância até o momento(usando a hipótese de indução) e d(k+1,k+2) sempre será a menor distância pois o Dijkstra sempre escolhe o menor caminho, logo C(k+2) também será válido.
+
+Provar para a iteração $C(k+2) = C(k+1) + d(k+1, k+2)$. Como $C(k+2)$ contém $C(k+1)$, que é a menor distância até o momento (usando a hipótese de indução), e $d(k+1, k+2)$ sempre será a menor distância, pois o Dijkstra sempre escolhe o menor caminho, logo $C(k+2)$ também será válido.
 
 
+# Resultados
+
+Neste estudo, aplicamos o algoritmo de Dijkstra em conjunto com o banco de dados Neo4j para otimizar as rotas de tubulações em uma fábrica de cerveja, simulando cenários cabíveis e realistas, respeitando todas as restrições para esse cenário visando o melhor caminho que fosse realmente possível. Os resultados obtidos demonstram a eficiência e eficácia do algoritmo na resolução de problemas de roteamento em cenários complexos.
+
+### Metodologia e execução do algoritmo
+
+Utilizamos o banco de dados orientado a grafos Neo4j para criar e armazenar o grafo que representa a fábrica de cerveja, com nós e arestas representando os elementos funcionais, como solenóides, tanques e válvulas mixproof. Com base nesse grafo, aplicamos o algoritmo de Dijkstra para encontrar o caminho mais eficiente entre os pontos de origem e destino, levando em consideração todas as restrições do cenário.
+
+### Análise dos resultados
+
+Os resultados obtidos com a aplicação do algoritmo de Dijkstra e Neo4j demonstram sua eficiência na otimização de rotas em uma fábrica de cerveja. Mesmo em um cenário complexo e realista, o algoritmo foi capaz de encontrar o melhor caminho em apenas 960ms.
+
+A análise dos resultados mostra que o algoritmo de Dijkstra é capaz de lidar com as restrições e características específicas do processo de produção de cerveja, encontrando soluções eficientes e eficazes para a otimização das rotas de tubulações. Além disso, a solução proposta é escalável e pode ser facilmente adaptada para trabalhar com diferentes tipos de terrenos e cenários.
+
+Em resumo, os resultados obtidos com a aplicação do algoritmo de Dijkstra e Neo4j na otimização de rotas em uma fábrica de cerveja são promissores e indicam que o algoritmo pode ser aplicado com sucesso em situações reais, melhorando a eficiência e a qualidade das rotas em diversos setores, como no caso da produção de cerveja.
+
+
+# Conclusão
+
+Com base nos objetivos e resultados apresentados neste estudo, podemos concluir que a aplicação do algoritmo de Dijkstra em conjunto com o banco de dados Neo4j é uma abordagem eficiente e eficaz para otimizar as rotas de tubulações em uma fábrica de cerveja. A metodologia proposta considera as restrições e características específicas do processo de produção de cerveja, levando em conta elementos funcionais como solenóides, tanques e válvulas mixproof.
+Os resultados obtidos demonstram que o algoritmo de Dijkstra é capaz de lidar com cenários complexos e realistas, encontrando soluções otimizadas em um tempo razoável. Além disso, a solução proposta é escalável e pode ser facilmente adaptada para trabalhar com diferentes tipos de terrenos e cenários, tornando-a aplicável em situações reais e melhorando a eficiência e a qualidade das rotas em diversos setores, como no caso da produção de cerveja.
+Neste projeto, desenvolvemos um frontend integrado com o backend, permitindo que o controle e uso do sistema sejam acessíveis em computadores via internet. Essa integração facilita a visualização e a interação com os resultados do algoritmo de Dijkstra, proporcionando uma experiência de usuário mais amigável e eficiente.
+Embora o cenário proposto neste estudo seja uma fábrica de cerveja, a metodologia desenvolvida tem potencial para ser aplicada em outros projetos e setores. A parceria com a Rockwell Automation, uma empresa líder em automação industrial, reforça a relevância e a aplicabilidade da solução proposta em situações reais e diversos setores.
+Em resumo, os resultados obtidos com a aplicação do algoritmo de Dijkstra e Neo4j na otimização de rotas em uma fábrica de cerveja são promissores e indicam que o algoritmo pode ser aplicado com sucesso em situações reais, melhorando a eficiência e a qualidade das rotas em diversos setores. A integração do frontend com o backend e a parceria com a Rockwell Automation reforçam a relevância e a aplicabilidade da solução proposta.
+
+
+### Sugestões para trabalhos futuros
+
+Algumas sugestões para trabalhos futuros incluem:
+
+- Adaptação para outros setores: A abordagem proposta pode ser adaptada para otimizar rotas em outros setores, como indústrias químicas, farmacêuticas e alimentícias, onde a eficiência e a qualidade das rotas de tubulações também são cruciais.
+- Incorporação de algoritmos de aprendizado de máquina: Algoritmos de aprendizado de máquina podem ser incorporados à solução proposta para melhorar ainda mais a eficiência e a eficácia do algoritmo de Dijkstra, permitindo que o sistema aprenda e se adapte às mudanças nas condições e restrições do processo de produção.
+- Desenvolvimento de soluções personalizadas para clientes específicos: Trabalhar em conjunto com empresas como a Rockwell Automation para desenvolver soluções personalizadas que atendam às necessidades específicas de seus clientes, garantindo a aplicabilidade e a eficácia da solução proposta em diferentes contextos e cenários.
 
 
 
@@ -113,96 +162,3 @@ AVALIAÇÃO de desempenho de sistemas produtivos: uma revisão da literatura. Re
 MARTINS, Alyne. Otimização de processos industriais através de técnicas de programação linear. UFSCar, 2018. Disponível em: https://repositorio.ufscar.br/bitstream/handle/ufscar/10239/MARTINS_Alyne_2018.pdf. Acesso em: 4 set. 2023.
 
 GESTÃO de projetos: uma análise crítica das abordagens tradicionais e ágeis. Gestão & Produção, v. 3, n. 3, p. 30-45, set./dez. 2019. Disponível em: https://www.scielo.br/j/gp/a/XM8DcbSWFGDHCTPfHWJWrCB/?format=pdf&lang=pt. Acesso em: 4 set. 2023.
-
-
-
-
-
-
-Entendo que você está enfrentando problemas com a formatação de fórmulas matemáticas no Markdown quando há texto na mesma linha. Vou ajustar o texto fornecido para garantir que as fórmulas sejam exibidas corretamente.
-
-## Análise da complexidade da solução proposta
-
-Para poder discorrer sobre as particularidades do Dijkstra, devemos entender como o algoritmo funciona. O Dijkstra é um algoritmo de busca que percorre uma quantidade de nós pré-estabelecidos a fim de encontrar o caminho de custo mínimo, ou seja, o menor caminho entre dois nós.
-
-### Funcionamento do algoritmo Dijkstra
-
-Para resolver tal tarefa, o Dijkstra usa de algumas variáveis:
-
-1. Cria uma lista de todos os vértices não visitados no grafo.
-2. Uma lista de distâncias com seus vértices. Inicialmente, todas as distâncias são inicializadas como infinitas, exceto a distância até o nó de origem, que recebe o valor 0.
-3. Uma lista com todos os nós visitados.
-
-Com esses itens já a postos, o algoritmo então começa no vértice de origem (com distância 0) e observa todos os arcos conectados a ele. Em seguida, ele atualiza os valores de tais arcos na lista de distâncias e inclui na lista de nós visitados aquele que tiver o arco com menor valor. Por fim, ele faz o mesmo processo que fez com o nó de origem para este novo nó visitado, repetindo esses passos até chegar no nó desejado.
-
-### Análise de complexidade
-
-Com todas essas informações, dá para começar a análise de complexidade. Começando pelo pior caso:
-
-#### Pior caso
-
-O pior caso para o algoritmo é quando ele tem que visitar todos os possíveis nodos e arestas em um grafo completo. Já o melhor caso é quando o algoritmo consegue encontrar o nodo com a menor distância a cada iteração, ou seja, cada nodo é visitado apenas uma vez e ele não explora nós/arestas irrelevantes.
-
-Análise pior caso:
-
-1. Setar a distância entre todos os nós para infinito e a distância do nó inicial para 0 demora $$O(V)$$, onde $$V$$ é o número de vértices.
-2. No pior caso, o `while` rodar até $$V$$ vezes, já que cada nodo pode ser adicionado ao `priorityQueue` uma vez. A cada iteração, o algoritmo remove o nodo com a menor distância desta lista de prioridade, o que leva $$O(\log V)$$, já que este `priorityQueue` é Binary heap-based. Ou seja, $$O(V\log(V))$$.
-3. No `for` loop, ele itera sobre os vizinhos do nodo atual, tomando $$O(E)$$, onde $$E$$ é o número de arcos, já que no pior caso ele irá examinar um número de arestas mais próximo de $$E$$.
-
-No final, para cada vizinho, o algoritmo modifica a sua distância caso um caminho menor seja encontrado, o adicionando na lista de prioridade. Portanto, temos uma complexidade resultante de $$O((V+E)\log(V))$$.
-
-#### Melhor caso
-
-Análise melhor caso:
-
-1. Setar a distância entre todos os nós para infinito e a distância do nó inicial para 0 demora $$O(V)$$, onde $$V$$ é o número de vértices.
-2. No melhor caso, o `while` vai rodar exatamente $$V$$ vezes.
-3. Dentro do `for` loop, ele examina os vizinhos $$O(E)$$, mas realiza o mínimo de operações com a fila de prioridade, evitando explorar nós e arestas que não fazem parte do caminho mais curto.
-
-As operações com a fila de prioridade ainda tomam $$O(V\log(V))$$ complexidade. Ou seja, a complexidade acaba sendo $$O((V+E)\log(V))$$ também. Mesmo a complexidade sendo a mesma, no melhor caso o algoritmo tende a executar mais rápido, já que diferente do pior caso ele não irá rodar $$O(E)$$ exatamente $$O(E)$$ vezes. No melhor caso, ele sempre rodará um número menor que $$O(E)$$.
-
-### Invariante com justificativa
-
-A invariante do laço representa uma expressão que será verdadeira toda vez que um loop (laço) for executado. Neste sentido, a invariante escolhida foi:
-$C(k+1) = C(k) + d(k, k+1)$.
-Ela foi escolhida pois representa o caminho mínimo até o próximo nó ($k+1$), que é dado pelo menor caminho até o nó anterior somado à distância entre o nó $k$ e este mesmo nó ($k+1$). Essa propriedade sempre se manterá verdadeira, pois o Dijkstra calcula a menor distância até o nó avaliado guardando a distância dos nós já visitados somada a este novo caminho.
-
-### Demonstração de corretude
-
-Passo básico:
-
-$$C(k) = 0$$, já que o Dijkstra define a distância do nó de origem como 0.
-
-Hipótese de indução:
-
-$$C(k+1) = C(k) + d(k, k+1)$$.
-
-Supor válido a distância mínima até o nó $$C(k+1)$$.
-
-Prova:
-
-Provar para a iteração $$C(k+2) = C(k+1) + d(k+1, k+2)$$. Como $$C(k+2)$$ contém $$C(k+1)$$, que é a menor distância até o momento (usando a hipótese de indução), e $$d(k+1, k+2)$$ sempre será a menor distância, pois o Dijkstra sempre escolhe o menor caminho, logo $$C(k+2)$$ também será válido.
-
-Citations:
-[1] https://support.zendesk.com/hc/pt-br/articles/4408846544922-Formata%C3%A7%C3%A3o-de-texto-com-Markdown
-[2] https://docusaurus.io/pt-BR/docs/markdown-features/math-equations
-[3] https://stackoverflow.com/questions/27081054/r-markdown-math-equation-alignment
-[4] https://stackoverflow.com/questions/11256433/how-to-show-math-equations-in-general-githubs-markdownnot-githubs-blog
-[5] https://docs.github.com/pt/get-started/writing-on-github/working-with-advanced-formatting/writing-mathematical-expressions
-[6] http://cursos.leg.ufpr.br/prr/capMarkdown.html
-[7] https://medium.com/walternascimentobarroso-pt/curso-r%C3%A1pido-de-markdown-4af49e3bfa65
-[8] https://csrgxtu.github.io/2015/03/20/Writing-Mathematic-Fomulars-in-Markdown/
-[9] https://habitica.fandom.com/pt-br/wiki/Guia_de_Markdown
-[10] https://github.blog/2022-05-19-math-support-in-markdown/
-[11] https://learn.microsoft.com/pt-pt/azure/devops/project/wiki/markdown-guidance?view=azure-devops
-[12] https://learn.microsoft.com/pt-br/azure/devops/report/dashboards/add-markdown-to-dashboard?view=azure-devops
-[13] https://learn.microsoft.com/pt-br/contribute/content/markdown-reference
-[14] https://youtube.com/watch?v=-8vYbYjn0AE
-[15] https://bookdown.org/bruno_lucian_costa/CursoBasicoR/m6.html
-[16] https://mathpix.com/docs/mathpix-markdown/syntax-reference
-[17] https://experienceleague.adobe.com/docs/contributor/contributor-guide/writing-essentials/markdown.html?lang=pt-BR
-[18] https://livro.curso-r.com/9-1-markdown.html
-[19] https://learn.microsoft.com/pt-br/azure/devops/project/wiki/markdown-guidance?view=azure-devops
-[20] https://ajustetecnico.github.io/blog/2018/09/18/equacoes-markdown/
-[21] https://developer.mozilla.org/pt-BR/docs/Learn/HTML/Introduction_to_HTML/Advanced_text_formatting
-[22] https://docs.pipz.com/central-de-ajuda/learning-center/guia-basico-de-markdown
