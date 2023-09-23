@@ -164,10 +164,8 @@ As operações com a fila de prioridade ainda tomam $$O(V\log(V))$$ complexidade
 ### Invariante com justificativa
 
 A invariante do laço representa uma expressão que será verdadeira toda vez que um loop (laço) for executado. Neste sentido, a invariante escolhida foi:
-
-$$C(k+1) = C(k) + d(k, k+1)$$
-
-Ela foi escolhida pois representa o caminho mínimo até o próximo nó ($$k+1$$), que é dado pelo menor caminho até o nó anterior somado à distância entre o nó $$k$$ e este mesmo nó ($$k+1$$). Essa propriedade sempre se manterá verdadeira, pois o Dijkstra calcula a menor distância até o nó avaliado guardando a distância dos nós já visitados somada a este novo caminho.
+$C(k+1) = C(k) + d(k, k+1)$.
+Ela foi escolhida pois representa o caminho mínimo até o próximo nó ($k+1$), que é dado pelo menor caminho até o nó anterior somado à distância entre o nó $k$ e este mesmo nó ($k+1$). Essa propriedade sempre se manterá verdadeira, pois o Dijkstra calcula a menor distância até o nó avaliado guardando a distância dos nós já visitados somada a este novo caminho.
 
 ### Demonstração de corretude
 
